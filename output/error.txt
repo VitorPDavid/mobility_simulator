@@ -1,0 +1,22 @@
+Traceback (most recent call last):
+  File "/home/vitorpdavid/codigos/mobility_simulator/src/simcampus/simcampus.py", line 109, in person
+    yield env.timeout(departure - env.now)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vitorpdavid/.pyenv/versions/3.12.3/lib/python3.12/site-packages/simpy/events.py", line 236, in __init__
+    raise ValueError(f'Negative delay {delay}')
+ValueError: Negative delay -33.733153826207854
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/home/vitorpdavid/codigos/mobility_simulator/src/simcampus/__main__.py", line 10, in <module>
+    run_simulation(options)
+  File "/home/vitorpdavid/codigos/mobility_simulator/src/simcampus/simcampus.py", line 144, in run_simulation
+    env.run(until=options.days * 1440)
+  File "/home/vitorpdavid/.pyenv/versions/3.12.3/lib/python3.12/site-packages/simpy/core.py", line 246, in run
+    self.step()
+  File "/home/vitorpdavid/.pyenv/versions/3.12.3/lib/python3.12/site-packages/simpy/core.py", line 204, in step
+    raise exc
+ValueError: Negative delay -33.733153826207854
