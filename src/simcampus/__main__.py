@@ -1,10 +1,10 @@
-from create_args_options import create_args_options
-from simcampus import run_simulation
+from .create_args_options import create_args_options
+from .simulation import run_simulation
+from .get_paramters import get_paramters
 
-if __name__ == "__main__":
-    parser = create_args_options()
 
-    # Read args from command line
-    (options, _) = parser.parse_args()
+parser = create_args_options()
+# Read args from command line
+(options, _) = parser.parse_args()
 
-    run_simulation(options)
+run_simulation(**get_paramters(options))

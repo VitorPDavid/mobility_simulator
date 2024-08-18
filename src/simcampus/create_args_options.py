@@ -9,7 +9,7 @@ def create_args_options():
         "--input-dir",
         type="string",
         dest="inputdir",
-        default="data",
+        default="../data",
         help="input from where to read data",
     )
     parser.add_option(
@@ -37,6 +37,6 @@ def create_args_options():
         default=10.0,
         help="maximum stay time in place",
     )
-    parser.add_option("-r", "--run", type="int", dest="run", default=1, help="simulation run")
+    parser.add_option("--seed", type="int", dest="seed", default=1, help="simulation seed")
 
     return parser

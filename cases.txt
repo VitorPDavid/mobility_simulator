@@ -1,9 +1,9 @@
-python src/simcampus -p 10 -d 10
-python src/simcampus -p 10 -d 100
-python src/simcampus -p 10 -d 1000
-python src/simcampus -p 100 -d 10
-python src/simcampus -p 100 -d 100
-python src/simcampus -p 100 -d 1000
-python src/simcampus -p 1000 -d 10
-python src/simcampus -p 1000 -d 100
-python src/simcampus -p 1000 -d 1000
+python -m simcampus -p 10 -d 10
+python -m simcampus -p 10 -d 100
+python -m simcampus -p 10 -d 1000
+python -m simcampus -p 100 -d 10
+python -m simcampus -p 100 -d 100
+python -m simcampus -p 100 -d 1000
+python -m simcampus -p 1000 -d 10
+python -m simcampus -p 1000 -d 100
+python -m simcampus -p 1000 -d 1000
