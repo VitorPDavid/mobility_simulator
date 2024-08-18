@@ -1,5 +1,12 @@
+[project]
+version = "0.0.1"
+name = "simcampus"
+
 [tool.black]
 line-length = 119
 
 [tool.isort]
 profile = "black"
+
+[tool.pytest.ini_options]
+testpaths = ["src/simcampus", "src/results_colector"]
