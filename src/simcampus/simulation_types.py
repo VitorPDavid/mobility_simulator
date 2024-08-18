@@ -17,3 +17,5 @@ Stay: TypeAlias = dict[str | None, tuple[float, float]]
 GroupFrequency: TypeAlias = dict[int, int]
 
 GroupParameters: TypeAlias = dict[int, list[tuple[float, float]]]
+
+Place: TypeAlias = str | None

@@ -4,6 +4,7 @@ import numpy as np
 import simpy
 from numpy.random import default_rng
 
+from .get_transitions_probabilities import get_transitions_probabilities
 from .process import person, trace
 from .read_data_from_files import read_data_from_files
 
@@ -21,27 +22,15 @@ def run_simulation(
     # isso é necessario ?
     np.random.seed(seed=seed)
 
-    group_freq, group_param, transitions, stay_data = read_data_from_files(inputdir)
+    group_freq, group_param, transitions, stay_data, places = read_data_from_files(inputdir)
 
     # initialization
     env = simpy.Environment()
-    places = [None, "adm", "inf", "mul", "bib", "pos"]
     focp = open("occupation", "w")
-    occupation = {}
-    tprob = {}
 
-    # transitions
-    for place in places:
-        occupation[place] = 0
-        # fout[place] = open(str(place), "w")
-        tprob[place] = []
-        total = sum(list(transitions[place].values()))
-        for nextplace in places:
-            if place != nextplace:
-                tprob[place].append(transitions[place][nextplace] / total)
-            else:
-                tprob[place].append(0.0)
-        print(tprob[place])
+    occupation = {place: 0 for place in places}
+    transition_probability = get_transitions_probabilities(places, transitions)
+
     print(stay_data)
 
     # groups
@@ -57,7 +46,20 @@ def run_simulation(
 
     for i in range(population):
         env.process(
-            person(env, rnd, i, occupation, places, groups, groupprob, aparam, dparam, stay_data, tprob, verbose)
+            person(
+                env,
+                rnd,
+                i,
+                occupation,
+                places,
+                groups,
+                groupprob,
+                aparam,
+                dparam,
+                stay_data,
+                transition_probability,
+                verbose,
+            )
         )
 
     env.process(trace(env, occupation, places, focp))
