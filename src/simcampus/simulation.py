@@ -4,9 +4,11 @@ import numpy as np
 import simpy
 from numpy.random import default_rng
 
+from .get_groups_probabilities import get_groups_probabilities
 from .get_transitions_probabilities import get_transitions_probabilities
 from .process import person, trace
-from .read_data_from_files import read_data_from_files
+from .read_stay_data_from_files import read_stay_data_from_files
+from .read_places_from_file import read_places_from_file
 
 
 def run_simulation(
@@ -19,30 +21,14 @@ def run_simulation(
     verbose: bool = False,
 ):
     rnd = default_rng(seed)
-    # isso é necessario ?
-    np.random.seed(seed=seed)
+    np.random.seed(seed=seed)  # isso é necessario ?
 
-    group_freq, group_param, transitions, stay_data, places = read_data_from_files(inputdir)
-
-    # initialization
     env = simpy.Environment()
-    focp = open("occupation", "w")
-
+    places = read_places_from_file(inputdir)
     occupation = {place: 0 for place in places}
-    transition_probability = get_transitions_probabilities(places, transitions)
-
-    print(stay_data)
-
-    # groups
-    groups = []
-    groupprob = []
-    aparam = {}
-    dparam = {}
-    for grp in group_freq:
-        groups.append(grp)
-        groupprob.append(group_freq[grp] / sum(list(group_freq.values())))  # amount in grp/total
-        aparam[grp] = group_param[grp][0]
-        dparam[grp] = group_param[grp][1]
+    groups_ids, groups_probability, arrival_parameters, departure_parameters = get_groups_probabilities(inputdir)
+    transition_probability = get_transitions_probabilities(inputdir, places)
+    stay_data = read_stay_data_from_files(inputdir)
 
     for i in range(population):
         env.process(
@@ -52,16 +38,16 @@ def run_simulation(
                 i,
                 occupation,
                 places,
-                groups,
-                groupprob,
-                aparam,
-                dparam,
+                groups_ids,
+                groups_probability,
+                arrival_parameters,
+                departure_parameters,
                 stay_data,
                 transition_probability,
                 verbose,
             )
         )
 
-    env.process(trace(env, occupation, places, focp))
+    env.process(trace(env, occupation, places))
 
     env.run(until=days * 1440)
