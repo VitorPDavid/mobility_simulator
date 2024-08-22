@@ -21,12 +21,20 @@ def run_simulation(
     verbose: bool = False,
 ):
     rnd = default_rng(seed)
-    np.random.seed(seed=seed)  # isso é necessario ?
+    np.random.seed(seed=seed)  # configura seed para as funções de norm e expo
 
     env = simpy.Environment()
+
+    input_path = PosixPath(inputdir)
+
+    (
+        groups_ids,
+        groups_probability,
+        arrival_parameters,
+        departure_parameters,
+    ) = get_groups_probabilities(input_path / "workhours")
     places = read_places_from_file(inputdir)
     occupation = {place: 0 for place in places}
-    groups_ids, groups_probability, arrival_parameters, departure_parameters = get_groups_probabilities(inputdir)
     transition_probability = get_transitions_probabilities(inputdir, places)
     stay_data = read_stay_data_from_files(inputdir)
 
