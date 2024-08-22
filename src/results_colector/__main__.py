@@ -10,7 +10,7 @@ Parametros:
 """
 
 import os
-from create_args_options import create_args_options
+from .create_args_options import create_args_options
 
 
 if __name__ == "__main__":

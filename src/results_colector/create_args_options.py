@@ -26,7 +26,7 @@ def create_args_options():
         "--repeat-count",
         type="int",
         dest="repeat_count",
-        default=3,
+        default=1,
         help="How much times to repeat each simulation case",
     )
 
