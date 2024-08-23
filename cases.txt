@@ -7,3 +7,21 @@ python -m simcampus -p 100 -d 1000
 python -m simcampus -p 1000 -d 10
 python -m simcampus -p 1000 -d 100
 python -m simcampus -p 1000 -d 1000
+python -m simcampus -p 10 -d 10 -s 405
+python -m simcampus -p 10 -d 100 -s 405
+python -m simcampus -p 10 -d 1000 -s 405
+python -m simcampus -p 100 -d 10 -s 405
+python -m simcampus -p 100 -d 100 -s 405
+python -m simcampus -p 100 -d 1000 -s 405
+python -m simcampus -p 1000 -d 10 -s 405
+python -m simcampus -p 1000 -d 100 -s 405
+python -m simcampus -p 1000 -d 1000 -s 405
+python -m simcampus -p 10 -d 10 -s 4023465
+python -m simcampus -p 10 -d 100 -s 4023465
+python -m simcampus -p 10 -d 1000 -s 4023465
+python -m simcampus -p 100 -d 10 -s 4023465
+python -m simcampus -p 100 -d 100 -s 4023465
+python -m simcampus -p 100 -d 1000 -s 4023465
+python -m simcampus -p 1000 -d 10 -s 4023465
+python -m simcampus -p 1000 -d 100 -s 4023465
+python -m simcampus -p 1000 -d 1000 -s 4023465
