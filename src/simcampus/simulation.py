@@ -39,6 +39,10 @@ def run_simulation(
     stay_data = read_stay_data_from_files(inputdir)
 
     for i in range(population):
+        group: int = rnd.choice(groups_ids, p=groups_probability, size=1)[0]
+        arrival_parameter = arrival_parameters[group]
+        departure_parameter = departure_parameters[group]
+
         env.process(
             person(
                 env,
@@ -46,10 +50,8 @@ def run_simulation(
                 i,
                 occupation,
                 places,
-                groups_ids,
-                groups_probability,
-                arrival_parameters,
-                departure_parameters,
+                arrival_parameter,
+                departure_parameter,
                 stay_data,
                 transition_probability,
                 verbose,
