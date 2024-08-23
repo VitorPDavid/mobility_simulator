@@ -6,7 +6,7 @@ from numpy.random import default_rng
 
 from .get_groups_probabilities import get_groups_probabilities
 from .get_transitions_probabilities import get_transitions_probabilities
-from .process import person, trace
+from .process import Trace, Person
 from .read_stay_data_from_files import read_stay_data_from_files
 from .read_places_from_file import read_places_from_file
 
@@ -42,22 +42,19 @@ def run_simulation(
         group: int = rnd.choice(groups_ids, p=groups_probability, size=1)[0]
         arrival_parameter = arrival_parameters[group]
         departure_parameter = departure_parameters[group]
-
-        env.process(
-            person(
-                env,
-                rnd,
-                i,
-                occupation,
-                places,
-                arrival_parameter,
-                departure_parameter,
-                stay_data,
-                transition_probability,
-                verbose,
-            )
+        Person(
+            env,
+            rnd,
+            i,
+            occupation,
+            places,
+            arrival_parameter,
+            departure_parameter,
+            stay_data,
+            transition_probability,
+            verbose,
         )
 
-    env.process(trace(env, occupation, places))
+    Trace(env, occupation, places)
 
     env.run(until=days * 1440)

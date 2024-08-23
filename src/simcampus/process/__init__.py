@@ -1,2 +1,2 @@
-from .person import person
-from .trace import trace
+from .person import Person
+from .trace import Trace
