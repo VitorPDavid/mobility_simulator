@@ -1,4 +1,3 @@
-import os
 from pathlib import PosixPath
 import pickle
 from simcampus.simulation_types import (
@@ -35,7 +34,7 @@ def get_groups_probabilities(cluster_data_file_path: PosixPath) -> tuple[
     horario de saida por grupo.
 
     Args:
-        cluster_data_file_path (PosixPath): caminho para o arquivo picle contendo as informações de clusterização
+        cluster_data_file_path (PosixPath): caminho para o arquivo pickle contendo as informações de clusterização
 
     Returns:
         tuple[ list[int], list[float], dict[int, DistributionParameter], dict[int, DistributionParameter] ]:
@@ -47,9 +46,7 @@ def get_groups_probabilities(cluster_data_file_path: PosixPath) -> tuple[
          3 dicionario contendo os parametros da distribuição normal do horario de partida de acordo com o grupos
     """
 
-    wh_filepath = os.path.join(cluster_data_file_path)
-
-    with open(wh_filepath, "rb") as file:
+    with open(cluster_data_file_path, "rb") as file:
         data = pickle.load(file)
         groups_frequency: GroupFrequency = data["group_freq"]
         groups_parameters: GroupParameters = {

@@ -35,7 +35,7 @@ def run_simulation(
     ) = get_groups_probabilities(input_path / "workhours")
     places = read_places_from_file(inputdir)
     occupation = {place: 0 for place in places}
-    transition_probability = get_transitions_probabilities(inputdir, places)
+    transition_probability = get_transitions_probabilities(input_path / "transitions", places)
     stay_data = read_stay_data_from_files(inputdir)
 
     for i in range(population):
