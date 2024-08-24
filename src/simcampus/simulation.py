@@ -9,6 +9,7 @@ from .get_transitions_probabilities import get_transitions_probabilities
 from .process import Trace, Person
 from .read_stay_data_from_files import read_stay_data_from_files
 from .read_places_from_file import read_places_from_file
+from .print_simulation_information import print_simulation_information
 
 
 def run_simulation(
@@ -23,21 +24,21 @@ def run_simulation(
     rnd = default_rng(seed)
     np.random.seed(seed=seed)  # configura seed para as funções de norm e expo
 
-    env = simpy.Environment()
-
     input_path = PosixPath(inputdir)
-
     (
         groups_ids,
         groups_probability,
         arrival_parameters,
         departure_parameters,
     ) = get_groups_probabilities(input_path / "workhours")
-    places = read_places_from_file(inputdir)
-    occupation = {place: 0 for place in places}
+    places = read_places_from_file(input_path / "places")
     transition_probability = get_transitions_probabilities(input_path / "transitions", places)
-    stay_data = read_stay_data_from_files(inputdir)
+    stay_data = read_stay_data_from_files(input_path / "staydist")
 
+    print_simulation_information(stay_data, transition_probability)
+
+    env = simpy.Environment()
+    occupation = {place: 0 for place in places}
     for i in range(population):
         group: int = rnd.choice(groups_ids, p=groups_probability, size=1)[0]
         arrival_parameter = arrival_parameters[group]

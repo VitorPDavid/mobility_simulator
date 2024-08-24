@@ -24,7 +24,7 @@ def get_transitions_probabilities(
     sum[transitions[place][i] for i in places] como valor.
 
     Args:
-        inputdir (PosixPath): caminho para o arquivo pickle contendo as informações de transitions
+        transitions_data_file_path (PosixPath): caminho para o arquivo pickle contendo as informações de transitions
         places (list[Place]): uma lista contento os identificadores dos possives lugares
 
     Returns:
@@ -46,7 +46,5 @@ def get_transitions_probabilities(
         transition_probability[place] = [
             (transitions[place][nextplace] / total) if place != nextplace else 0.0 for nextplace in places
         ]
-
-        print(transition_probability[place])
 
     return transition_probability
