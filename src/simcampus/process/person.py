@@ -14,8 +14,8 @@ class Person:
     def __init__(
         self,
         env: Environment,
-        rnd: Generator,
-        i: int,
+        random_generator: Generator,
+        identifier: int,
         occupation: dict[Place, int],
         places: list[Place],
         arrival_parameter: DistributionParameter,
@@ -24,14 +24,32 @@ class Person:
         transition_probability: dict[Place, list[float]],
         verbose: bool,
     ) -> None:
+        """
+        Recebe as variaveis necessarias para executar o comportamento de uma pessoa e starta a simulação
+        para essa instancia da pessoa
+
+        Args:
+            env (Environment): variavel de ambiente do simpy que mantem a simulação
+            random_generator (Generator): gerador de numeros aleatorios configurado com a seed da simulação
+            identifier (int): identificador de pessoa
+            occupation (dict[Place, int]): variavel para manter de forma global o total de pessoas em cada lugar
+            places (list[Place]): lista com identificadores dos lugares
+            arrival_parameter (DistributionParameter): parametros da distribuição normal do tempo de chegada do grupo
+            departure_parameter (DistributionParameter): parametros da distribuição normal do tempo de partida do grupo
+            stay_data (dict[Place, DistributionParameter]):
+                parametros da distribuição normal do tempo de permanencia nos lugares
+            transition_probability (dict[Place, list[float]]):
+                dicionario de probabilidade de mudança para os demais locais por local
+            verbose (bool): se a simulação deve ser
+        """
         self.env = env
-        self.rnd = rnd
-        self.i = i
-        self.occupation = occupation
         self.places = places
+        self.stay_data = stay_data
+        self.identifier = identifier
+        self.occupation = occupation
+        self.random_generator = random_generator
         self.arrival_parameter = arrival_parameter
         self.departure_parameter = departure_parameter
-        self.stay_data = stay_data
         self.transition_probability = transition_probability
         self.verbose = verbose
 
@@ -43,10 +61,10 @@ class Person:
         # Day loop
         while True:
             place: Place = None
-            arrival = self.get_arrival()
-            departure = self.get_departure(arrival) + self.env.now
+            self.set_arrival()
+            self.set_departure()
 
-            yield self.env.timeout(arrival)
+            yield self.env.timeout(self.arrival)
 
             place, stay = self.change_place(
                 actual_place=place,
@@ -54,10 +72,10 @@ class Person:
             )
 
             if self.verbose:
-                print("[{:10.5f}]\tUser {:02d} arrived at {}".format(self.env.now, self.i, place))
+                print("[{:10.5f}]\tUser {:02d} arrived at {}".format(self.env.now, self.identifier, place))
 
             # Dinamica de jornada de trabalho
-            while self.env.now + stay < departure:
+            while self.env.now + stay < self.departure:
                 yield self.env.timeout(stay)
 
                 place, stay = self.change_place(
@@ -66,20 +84,20 @@ class Person:
                 )
 
                 if self.verbose:
-                    print("[{:10.5f}]\tUser {:02d} switched to {}".format(self.env.now, self.i, place))
+                    print("[{:10.5f}]\tUser {:02d} switched to {}".format(self.env.now, self.identifier, place))
 
             # esperando momento de saida
-            yield self.env.timeout(departure - self.env.now)
+            yield self.env.timeout(self.departure - self.env.now)
 
             self.change_occupation(place, None)
             if self.verbose:
-                print("[{:10.5f}]\tUser {:02d} leaved".format(self.env.now, self.i))
+                print("[{:10.5f}]\tUser {:02d} leaved".format(self.env.now, self.identifier))
 
             # esperando para o proximo dia
             yield self.env.timeout(day * 1440 - self.env.now)
 
             if self.verbose:
-                print("[{:10.5f}]\tUser {:02d} day {} endded".format(self.env.now, self.i, day))
+                print("[{:10.5f}]\tUser {:02d} day {} endded".format(self.env.now, self.identifier, day))
 
             day += 1
 
@@ -94,34 +112,40 @@ class Person:
         transition_probability: list[float],
     ) -> tuple[Place, float]:
         """TODO: place of arrival needs to be obtained from data... using tprob from None is wrong"""
-        new_place: Place = self.rnd.choice(self.places, size=1, p=transition_probability)[0]
+        new_place: Place = self.random_generator.choice(self.places, size=1, p=transition_probability)[0]
         stay: float = expon.rvs(size=1, loc=self.stay_data[new_place].loc, scale=self.stay_data[new_place].scale)[0]
 
         self.change_occupation(actual_place, new_place)
 
         return new_place, stay
 
-    def get_arrival(
+    def set_arrival(
         self,
-    ) -> float:
-        # User arrival
+    ):
+        """
+        seta um horario de chegada valido de acordo com a distribuição normal cadastrada no objeto.
+        """
+
         arrival: float = norm.rvs(size=1, loc=self.arrival_parameter.loc, scale=self.arrival_parameter.scale)[0]
 
         while arrival > 1440:
-            arrival: float = norm.rvs(size=1, loc=self.arrival_parameter.loc, scale=self.arrival_parameter.scale)[0]
+            arrival = norm.rvs(size=1, loc=self.arrival_parameter.loc, scale=self.arrival_parameter.scale)[0]
 
-        return arrival
+        self.arrival: float = arrival
 
-    def get_departure(
+    def set_departure(
         self,
-        arrival: float,
-    ) -> float:
+    ):
+        """
+        seta um horario de saida valido de acordo com o horario de chegada a distribuição normal cadastrados no objeto.
+        """
+
         departure: float = norm.rvs(size=1, loc=self.departure_parameter.loc, scale=self.departure_parameter.scale)[0]
 
-        while departure < arrival:
+        while departure < self.arrival:
             departure = norm.rvs(size=1, loc=self.departure_parameter.loc, scale=self.departure_parameter.scale)[0]
 
         if departure > MAX_MINUTES_IN_DAY:
             departure = MAX_MINUTES_IN_DAY
 
-        return departure
+        self.departure: float = departure + self.env.now
