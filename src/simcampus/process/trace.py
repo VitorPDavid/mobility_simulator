@@ -10,6 +10,11 @@ class Trace:
         occupation: dict[Place, int],
         places: list[Place],
     ) -> None:
+        """
+        Recebe as variaveis necessarias para gerar as informações globais de pessoas e adiciona esse
+        observador a simulação
+        """
+
         self.env = env
         self.occupation = occupation
         self.places = places
@@ -17,6 +22,11 @@ class Trace:
         self.action = env.process(self.run())
 
     def run(self):
+        """
+        Enquanto a simulação estiver ocorrendo salva em uma arquivo e envia par aa saida padrão
+        quantas pessoas estão ocupando cada local e o total de pessoas em todos os lugares a
+        cada cinco minutos simulados
+        """
         step = 5.0
 
         with open("occupation", "w") as focp:

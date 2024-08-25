@@ -25,8 +25,8 @@ class Person:
         verbose: bool,
     ) -> None:
         """
-        Recebe as variaveis necessarias para executar o comportamento de uma pessoa e starta a simulação
-        para essa instancia da pessoa
+        Recebe as variaveis necessarias para executar o comportamento de uma pessoa e adiciona essa pessoa
+        a simulação
 
         Args:
             env (Environment): variavel de ambiente do simpy que mantem a simulação
@@ -56,6 +56,17 @@ class Person:
         self.action = env.process(self.run())
 
     def run(self):
+        """
+        comportamento da pessoa durante a simulação
+        primeiro configura os valores iniciais da pessoa de acordo com as distribuições normais recebidas
+
+        depois espera o momento de chega, altera o local e altera as variaveis de acompanhamento da simulação
+
+        então enquanto o tempo da saida não tiver sido alcançado (linha 21 da função) fica esperando o tempo
+        de permanencia no local atual para trocar para outro local dentro
+
+        quando o tempo de saida é alcançado ajusta as variaveis de aocmpanhamento da simulação e espera o proximo dia
+        """
         day = 1
 
         # Day loop
@@ -66,6 +77,7 @@ class Person:
 
             yield self.env.timeout(self.arrival)
 
+            # TODO: place of arrival needs to be obtained from data... using tprob from None is wrong
             place, stay = self.change_place(
                 actual_place=place,
                 transition_probability=self.transition_probability[place],
@@ -111,7 +123,18 @@ class Person:
         actual_place: Place,
         transition_probability: list[float],
     ) -> tuple[Place, float]:
-        """TODO: place of arrival needs to be obtained from data... using tprob from None is wrong"""
+        """
+        recebe um local e a lista de probabilidade de transição para outro local e retonar o proximo local
+        de acordo com esse local.
+
+        Args:
+            actual_place (Place): identificador do local atual
+            transition_probability (list[float]): lista de probilidade do proximo local
+
+        Returns:
+            tuple[Place, float]: retorna uma tupla com o novo local e o tempo de permanencia nesse local
+        """
+
         new_place: Place = self.random_generator.choice(self.places, size=1, p=transition_probability)[0]
         stay: float = expon.rvs(size=1, loc=self.stay_data[new_place].loc, scale=self.stay_data[new_place].scale)[0]
 
