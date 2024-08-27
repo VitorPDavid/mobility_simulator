@@ -77,7 +77,6 @@ class Person:
 
             yield self.env.timeout(self.arrival)
 
-            # TODO: place of arrival needs to be obtained from data... using tprob from None is wrong
             place, stay = self.change_place(
                 actual_place=place,
                 transition_probability=self.transition_probability[place],
