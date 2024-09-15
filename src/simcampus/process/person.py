@@ -4,6 +4,7 @@ from scipy.stats import norm, expon  # type: ignore
 from simpy import Environment
 
 from simcampus.simulation_types import DistributionParameter, Place
+from simcampus.contacts.contacts_types import Contact, ContactPerson
 
 from numpy.random import Generator
 
@@ -22,6 +23,9 @@ class Person:
         departure_parameter: DistributionParameter,
         stay_data: dict[Place, DistributionParameter],
         transition_probability: dict[Place, list[float]],
+        persons_per_place: dict[Place, set[ContactPerson]],
+        all_contacts: dict[int, list[Contact]],
+        contact_information: dict[int, ContactPerson],
         verbose: bool,
     ) -> None:
         """
@@ -51,6 +55,9 @@ class Person:
         self.arrival_parameter = arrival_parameter
         self.departure_parameter = departure_parameter
         self.transition_probability = transition_probability
+        self.persons_per_place = persons_per_place
+        self.all_contacts = all_contacts
+        self.contact_information = contact_information
         self.verbose = verbose
 
         self.action = env.process(self.run())
@@ -77,7 +84,7 @@ class Person:
 
             yield self.env.timeout(self.arrival)
 
-            place, stay = self.change_place(
+            place, stay = self.change_to_random_place(
                 actual_place=place,
                 transition_probability=self.transition_probability[place],
             )
@@ -89,7 +96,7 @@ class Person:
             while self.env.now + stay < self.departure:
                 yield self.env.timeout(stay)
 
-                place, stay = self.change_place(
+                place, stay = self.change_to_random_place(
                     actual_place=place,
                     transition_probability=self.transition_probability[place],
                 )
@@ -100,7 +107,7 @@ class Person:
             # esperando momento de saida
             yield self.env.timeout(self.departure - self.env.now)
 
-            self.change_occupation(place, None)
+            self.change_place(place, None)
             if self.verbose:
                 print("[{:10.5f}]\tUser {:02d} leaved".format(self.env.now, self.identifier))
 
@@ -112,11 +119,7 @@ class Person:
 
             day += 1
 
-    def change_occupation(self, old_place: Place, new_place: Place):
-        self.occupation[old_place] -= 1
-        self.occupation[new_place] += 1
-
-    def change_place(
+    def change_to_random_place(
         self,
         *_: Any,
         actual_place: Place,
@@ -137,9 +140,56 @@ class Person:
         new_place: Place = self.random_generator.choice(self.places, size=1, p=transition_probability)[0]
         stay: float = expon.rvs(size=1, loc=self.stay_data[new_place].loc, scale=self.stay_data[new_place].scale)[0]
 
-        self.change_occupation(actual_place, new_place)
+        self.change_place(actual_place, new_place)
 
         return new_place, stay
+
+    def change_place(self, old_place: Place, new_place: Place):
+        self.occupation[old_place] -= 1
+        self.occupation[new_place] += 1
+
+        contact_info = self.contact_information[self.identifier]
+
+        self.persons_per_place[old_place].discard(contact_info)
+        self.persons_per_place[new_place].add(contact_info)
+
+        self.handle_contact(new_place)
+        self.handle_contact_end(old_place)
+
+    def handle_contact(self, new_place: Place):
+        if new_place is None:
+            return
+
+        contact_idetifiers = self.persons_per_place[new_place]
+
+        for contact_person in contact_idetifiers:
+            if contact_person.identifier != self.identifier:
+                contact = Contact(
+                    new_place,
+                    self.env.now,
+                    self.contact_information[self.identifier],
+                    self.contact_information[contact_person.identifier],
+                )
+
+                self.all_contacts[self.identifier].append(contact)
+                self.all_contacts[contact_person.identifier].append(contact)
+
+    def handle_contact_end(self, old_place: Place):
+        if old_place is None:
+            return
+
+        for contact in self.all_contacts[self.identifier]:
+            if contact.place == old_place and contact.end_time is None:
+                contact.end_time = self.env.now
+
+        contact_idetifiers = self.persons_per_place[old_place]
+        for contact_person in contact_idetifiers:
+            if contact_person.identifier == self.identifier:
+                continue
+
+            for contact in self.all_contacts[contact_person.identifier]:
+                if contact.end_time is None and contact.has_person(self.identifier):
+                    contact.end_time = self.env.now
 
     def set_arrival(
         self,

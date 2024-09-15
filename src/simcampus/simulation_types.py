@@ -51,3 +51,7 @@ class GroupArrivelAndDerpartureParameters:
 
 
 GroupParameters: TypeAlias = dict[int, GroupArrivelAndDerpartureParameters]
+
+GroupIdentifier: TypeAlias = int
+
+PersonIdentifier: TypeAlias = int
