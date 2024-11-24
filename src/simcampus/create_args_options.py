@@ -13,6 +13,14 @@ def create_args_options():
         help="input from where to read data",
     )
     parser.add_option(
+        "-o",
+        "--output-dir",
+        type="string",
+        dest="outputdir",
+        default="../output",
+        help="input from where to write the data",
+    )
+    parser.add_option(
         "-p",
         "--population",
         type="int",
@@ -30,13 +38,12 @@ def create_args_options():
     )
     parser.add_option("-d", "--days", type="int", dest="days", default=7, help="days to simulate")
     parser.add_option(
-        "-s",
         "--stay",
         type="float",
         dest="stay",
         default=10.0,
-        help="maximum stay time in place",
+        help="Not in use, maximum stay time in place",
     )
-    parser.add_option("--seed", type="int", dest="seed", default=1, help="simulation seed")
+    parser.add_option("-s", "--seed", type="int", dest="seed", default=1, help="simulation seed")
 
     return parser

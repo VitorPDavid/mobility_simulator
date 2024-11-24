@@ -1,9 +1,9 @@
 from typing import Collection, Iterable
-from simcampus.contacts.contacts_types import Contact, ContactData
+from simcampus.contacts.contacts_types import Contact, ContactData, GroupContactsData
 from simcampus.simulation_types import GroupIdentifier
 
 
-def get_group_contacts_data(all_contacts: dict[int, list[Contact]]):
+def get_group_contacts_data(all_contacts: dict[int, list[Contact]]) -> GroupContactsData:
     contacts_data: list[ContactData] = []
     group_contacts: dict[int, Collection[Contact]] = {}
 
@@ -17,12 +17,11 @@ def get_group_contacts_data(all_contacts: dict[int, list[Contact]]):
 
     contact_matrix: list[list[int]] = []
     unique_contacts_matrix: list[list[int]] = []
-    frequency_matrix: list[list[float]] = []
-    unique_contacts_frequency_matrix: list[list[float]] = []
 
-    unique_contact_graph: dict[GroupIdentifier, dict[GroupIdentifier, int]] = {
-        group: {group: 0 for inner_group in groups_list if inner_group != group} for group in groups_list
-    }
+    total_contacts: list[int] = []
+    total_contacts_with_other_groups: list[int] = []
+    total_unique_contacts: list[int] = []
+    total_unique_contacts_with_other_groups: list[int] = []
 
     for index, group in enumerate(groups_list):
         contacts = group_contacts[group]
@@ -35,22 +34,29 @@ def get_group_contacts_data(all_contacts: dict[int, list[Contact]]):
                 unique_contacts.append(contact)
                 unique_contacts_control.add(contact.persons_hash())
 
-        contact_matrix.append(__create_matrix_row(index, groups_list, contacts))
-        unique_contacts_matrix.append(__create_matrix_row(index, groups_list, unique_contacts))
+        row = __create_matrix_row(index, groups_list, contacts)
+        contact_matrix.append(row)
 
-        frequency_matrix.append(__create_frequence_row(contact_matrix[index], groups_list))
-        unique_contacts_frequency_matrix.append(__create_frequence_row(unique_contacts_matrix[index], groups_list))
+        total_contacts.append(sum(row))
+        total_contacts_with_other_groups.append(sum(row) - row[index])
+
+        row = __create_matrix_row(index, groups_list, unique_contacts)
+        unique_contacts_matrix.append(row)
+
+        total_unique_contacts.append(sum(row))
+        total_unique_contacts_with_other_groups.append(sum(row) - row[index])
 
         contacts_data.append(ContactData(group, contacts, len(contacts), len(unique_contacts)))
 
-    return (
+    return GroupContactsData(
         contacts_data,
-        groups_list,
+        [str(group) for group in groups_list],
         contact_matrix,
         unique_contacts_matrix,
-        frequency_matrix,
-        unique_contacts_frequency_matrix,
-        unique_contact_graph,
+        total_contacts,
+        total_contacts_with_other_groups,
+        total_unique_contacts,
+        total_unique_contacts_with_other_groups,
     )
 
 
@@ -67,17 +73,4 @@ def __create_matrix_row(row_index: int, groups_list: list[GroupIdentifier], cont
         for column_group in groups_list
     ]
 
-    total = sum(row)
-    row.append(total)
-    row.append(total - row[row_index])
-
     return row
-
-
-def __create_frequence_row(contact_row: list[int], groups_list: list[GroupIdentifier]):
-    total = contact_row[-2]
-
-    return [
-        total / contact_row[column_index] if contact_row[column_index] > 0 else 0
-        for column_index in range(len(groups_list))
-    ]

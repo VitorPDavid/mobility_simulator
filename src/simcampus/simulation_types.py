@@ -4,6 +4,7 @@ from typing import Sequence, TypeAlias, TypedDict
 
 class SimulationArgs(TypedDict):
     inputdir: str
+    outputdir: str
     days: int
     stay: float
     population: int

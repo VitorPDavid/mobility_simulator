@@ -1,4 +1,5 @@
 from typing import Any
+
 from scipy.stats import norm, expon  # type: ignore
 
 from simpy import Environment
@@ -138,7 +139,12 @@ class Person:
         """
 
         new_place: Place = self.random_generator.choice(self.places, size=1, p=transition_probability)[0]
-        stay: float = expon.rvs(size=1, loc=self.stay_data[new_place].loc, scale=self.stay_data[new_place].scale)[0]
+        stay: float = expon.rvs(
+            size=1,
+            loc=self.stay_data[new_place].loc,
+            scale=self.stay_data[new_place].scale,
+            random_state=self.random_generator,
+        )[0]
 
         self.change_place(actual_place, new_place)
 
@@ -198,10 +204,20 @@ class Person:
         seta um horario de chegada valido de acordo com a distribuição normal cadastrada no objeto.
         """
 
-        arrival: float = norm.rvs(size=1, loc=self.arrival_parameter.loc, scale=self.arrival_parameter.scale)[0]
+        arrival: float = norm.rvs(
+            size=1,
+            loc=self.arrival_parameter.loc,
+            scale=self.arrival_parameter.scale,
+            random_state=self.random_generator,
+        )[0]
 
         while arrival > 1440:
-            arrival = norm.rvs(size=1, loc=self.arrival_parameter.loc, scale=self.arrival_parameter.scale)[0]
+            arrival = norm.rvs(
+                size=1,
+                loc=self.arrival_parameter.loc,
+                scale=self.arrival_parameter.scale,
+                random_state=self.random_generator,
+            )[0]
 
         self.arrival: float = arrival
 
@@ -212,10 +228,20 @@ class Person:
         seta um horario de saida valido de acordo com o horario de chegada a distribuição normal cadastrados no objeto.
         """
 
-        departure: float = norm.rvs(size=1, loc=self.departure_parameter.loc, scale=self.departure_parameter.scale)[0]
+        departure: float = norm.rvs(
+            size=1,
+            loc=self.departure_parameter.loc,
+            scale=self.departure_parameter.scale,
+            random_state=self.random_generator,
+        )[0]
 
         while departure < self.arrival:
-            departure = norm.rvs(size=1, loc=self.departure_parameter.loc, scale=self.departure_parameter.scale)[0]
+            departure = norm.rvs(
+                size=1,
+                loc=self.departure_parameter.loc,
+                scale=self.departure_parameter.scale,
+                random_state=self.random_generator,
+            )[0]
 
         if departure > MAX_MINUTES_IN_DAY:
             departure = MAX_MINUTES_IN_DAY

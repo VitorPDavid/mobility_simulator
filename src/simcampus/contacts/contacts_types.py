@@ -89,7 +89,7 @@ class Contact:
 
 @dataclass
 class ContactData:
-    identifier: GroupIdentifier | PersonIdentifier
+    identifier: GroupIdentifier | PersonIdentifier | Place
     contacts: Collection[Contact]
     total_contacts: int
     total_unique_contacts: int
@@ -114,3 +114,17 @@ class ContactData:
             contacts_str += f"{contact}\n"
 
         return f"Lista de Contatos:\n{contacts_str}"
+
+
+@dataclass
+class GroupContactsData:
+    contacts_data: list[ContactData]
+    groups_list: list[str]
+    contact_matrix: list[list[int]]
+    unique_contacts_matrix: list[list[int]]
+
+    total_contacts: list[int]
+    total_contacts_with_other_groups: list[int]
+
+    total_unique_contacts: list[int]
+    total_unique_contacts_with_other_groups: list[int]

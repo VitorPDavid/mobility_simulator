@@ -1,16 +1,21 @@
 from io import TextIOWrapper
-from simpy import Environment
-import pandas as pd
+from itertools import chain
+from pathlib import PosixPath
+import pickle
 
-from simcampus.contacts.get_group_contacts_data import get_group_contacts_data
+import numpy as np
+from simpy import Environment
+
+from simcampus.contacts.create_contacts_graphs import create_contacts_graphs
+from simcampus.contacts.contacts_types import Contact
 from simcampus.contacts.get_person_contacts_data import get_person_contacts_data
 from simcampus.simulation_types import Place
-from simcampus.contacts.contacts_types import Contact
 
 
 class Trace:
     def __init__(
         self,
+        output_path: PosixPath,
         env: Environment,
         occupation: dict[Place, int],
         all_contacts: dict[int, list[Contact]],
@@ -23,6 +28,7 @@ class Trace:
         """
 
         self.env = env
+        self.output_path = output_path
         self.occupation = occupation
         self.places = places
         self.all_contacts = all_contacts
@@ -38,8 +44,8 @@ class Trace:
         """
         step = 5.0
 
-        with open("occupation", "w") as focp:
-            with open("contacts.txt", "w") as fcontacts:
+        with open(self.output_path / "occupation.txt", "w") as focp:
+            with open(self.output_path / "contacts.txt", "w") as fcontacts:
                 while True:
                     yield self.env.timeout(step)
 
@@ -48,68 +54,41 @@ class Trace:
                     if self.day_end():
                         self.contacts_trace(fcontacts)
 
+                        for key in self.all_contacts:
+                            self.all_contacts[key] = []
+
     def occupation_trace(self, focp: TextIOWrapper):
         total = 0
         focp.write("{} ".format(self.env.now))
-        print("{} ".format(self.env.now), end="")
         for place in self.places:
             if place is None:
                 continue
             focp.write("{} ".format(self.occupation[place]))
-            print("{} ".format(self.occupation[place]), end="")
             total += self.occupation[place]
         focp.write("{}\n".format(total))
-        print("{}".format(total))
 
     def day_end(self):
         return int(self.env.now) % 1435 == 0
 
     def contacts_trace(self, fcontacts: TextIOWrapper):
+        with open(self.output_path / "all_contacts.pkl", "wb") as all_contacts_file:
+            pickle.dump(self.all_contacts, all_contacts_file)
+
         person_contacts_data = get_person_contacts_data(self.all_contacts)
         for contact_data in person_contacts_data:
             fcontacts.write(contact_data.__str__(self.verbose))
 
-        self.groups_contacts_trace(fcontacts)
-
-        for key in self.all_contacts:
-            self.all_contacts[key] = []
-
-    def groups_contacts_trace(self, fcontacts: TextIOWrapper):
-        if self.verbose:
-            fcontacts.write("\n\ngrupos:\n")
-
-        (
-            contacts_data, groups_list,
-            contact_matrix, unique_contacts_matrix,
-            frequency_matrix, unique_contacts_frequency_matrix,
-            unique_contact_graph
-        ) = get_group_contacts_data(self.all_contacts)
-
-        for contact_data in contacts_data:
-            fcontacts.write(contact_data.__str__(self.verbose))
-
-        fcontacts.write("Matriz de Contatos Totais dos Grupos:\n")
-        df = pd.DataFrame(
-            contact_matrix, index=groups_list,
-            columns=groups_list + ["total", "total com outros grupos"]
+        all_times = np.array(
+            [
+                contact.contact_duration
+                for contact in {
+                    contact
+                    for contact in chain.from_iterable([contact_list for contact_list in self.all_contacts.values()])
+                }
+            ],
+            dtype=np.float64,
         )
-        fcontacts.write(f"{df.to_string(index=True)}\n")
 
-        fcontacts.write("\nMatriz de Contatos Unicos dos Grupos:\n")
-        df = pd.DataFrame(
-            unique_contacts_matrix, index=groups_list,
-            columns=groups_list + ["total", "total com outros grupos"]
-        )
-        fcontacts.write(f"{df.to_string(index=True)}\n")
+        fcontacts.write(f"tempo medio: {np.mean(all_times)}\n")
 
-        fcontacts.write("\nMatriz de Frequencia de Contatos dos Grupos:\n")
-        df = pd.DataFrame(frequency_matrix, index=groups_list, columns=groups_list)
-        fcontacts.write(f"{df.to_string(index=True, float_format="%.3f")}\n")
-
-        fcontacts.write("\nMatriz de Frequencia de Contatos Unicos dos Grupos:\n")
-        df = pd.DataFrame(unique_contacts_frequency_matrix, index=groups_list, columns=groups_list)
-        fcontacts.write(f"{df.to_string(index=True, float_format="%.3f")}\n")
-
-        fcontacts.write(f"{unique_contact_graph}")
-
-        fcontacts.write("\n\n\n")
+        create_contacts_graphs(self.output_path, self.all_contacts, self.places, person_contacts_data)

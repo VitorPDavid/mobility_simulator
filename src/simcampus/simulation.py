@@ -1,3 +1,4 @@
+import os
 from pathlib import PosixPath
 from typing import Union
 import numpy as np
@@ -18,6 +19,7 @@ from .simulation_types import Place
 def run_simulation(
     *_: None,
     inputdir: Union[str, PosixPath] = "data",
+    outputdir: Union[str, PosixPath] = "output",
     days: int = 7,
     stay: float = 10.0,
     population: int = 10,
@@ -38,7 +40,13 @@ def run_simulation(
     transition_probability = get_transitions_probabilities(input_path / "transitions", places)
     stay_data = read_stay_data_from_files(input_path / "staydist")
 
-    print_simulation_information(stay_data, transition_probability)
+    output_path = PosixPath(outputdir)
+    os.makedirs(output_path, exist_ok=True)
+    foutput = open(output_path / "output.txt", "w")
+
+    print_simulation_information(foutput, seed, stay_data, transition_probability)
+
+    foutput.close()
 
     env = simpy.Environment()
     occupation = {place: 0 for place in places}
@@ -70,6 +78,6 @@ def run_simulation(
             verbose,
         )
 
-    Trace(env, occupation, all_contacts, places, verbose)
+    Trace(output_path, env, occupation, all_contacts, places, verbose)
 
     env.run(until=days * 1440)

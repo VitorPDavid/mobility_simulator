@@ -10,6 +10,9 @@ Parametros:
 """
 
 import os
+import re
+from pathlib import PosixPath
+
 from .create_args_options import create_args_options
 
 
@@ -22,11 +25,15 @@ if __name__ == "__main__":
     with open(options.input_file, "r") as cases_file:
         for index, case in enumerate(cases_file.readlines()):
             command_string = case.strip()
-            comand_name = f"execucao_{index}"
 
-            os.makedirs(f"{options.output_dir}/{comand_name}", exist_ok=True)
+            population = re.search(r"-p (\d+)", command_string)[1]
+            seed = re.search(r"-s (\d+)", command_string)[1]
+
+            comand_name = f"population_{population}_seed_{seed}"
+
+            output_path = PosixPath(options.output_dir)
+            directory_path = output_path / comand_name / f"{options.repeat_count}"
+            os.makedirs(directory_path, exist_ok=True)
 
             for case_redudance in range(options.repeat_count):
-                file_name = f"{options.output_dir}/{comand_name}/repetition_{case_redudance}.txt"
-                os.system(f"touch {file_name}")
-                os.system(f"{command_string} > {file_name}")
+                os.system(f"{command_string} -o {directory_path}")
