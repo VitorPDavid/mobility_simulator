@@ -1,0 +1,41 @@
+Contatos de 0
+Contatos Totais: 11
+Contatos Unicos: 6
+
+Contatos de 1
+Contatos Totais: 1
+Contatos Unicos: 1
+
+Contatos de 2
+Contatos Totais: 4
+Contatos Unicos: 4
+
+Contatos de 3
+Contatos Totais: 10
+Contatos Unicos: 5
+
+Contatos de 4
+Contatos Totais: 8
+Contatos Unicos: 5
+
+Contatos de 5
+Contatos Totais: 5
+Contatos Unicos: 3
+
+Contatos de 6
+Contatos Totais: 11
+Contatos Unicos: 7
+
+Contatos de 7
+Contatos Totais: 1
+Contatos Unicos: 1
+
+Contatos de 8
+Contatos Totais: 1
+Contatos Unicos: 1
+
+Contatos de 9
+Contatos Totais: 14
+Contatos Unicos: 7
+
+tempo medio: 17.87796173624498

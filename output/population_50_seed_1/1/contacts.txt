@@ -1,0 +1,201 @@
+Contatos de 0
+Contatos Totais: 9
+Contatos Unicos: 8
+
+Contatos de 1
+Contatos Totais: 20
+Contatos Unicos: 11
+
+Contatos de 2
+Contatos Totais: 9
+Contatos Unicos: 9
+
+Contatos de 3
+Contatos Totais: 22
+Contatos Unicos: 11
+
+Contatos de 4
+Contatos Totais: 0
+Contatos Unicos: 0
+
+Contatos de 5
+Contatos Totais: 33
+Contatos Unicos: 25
+
+Contatos de 6
+Contatos Totais: 1
+Contatos Unicos: 1
+
+Contatos de 7
+Contatos Totais: 30
+Contatos Unicos: 19
+
+Contatos de 8
+Contatos Totais: 10
+Contatos Unicos: 9
+
+Contatos de 9
+Contatos Totais: 7
+Contatos Unicos: 6
+
+Contatos de 10
+Contatos Totais: 8
+Contatos Unicos: 7
+
+Contatos de 11
+Contatos Totais: 10
+Contatos Unicos: 9
+
+Contatos de 12
+Contatos Totais: 5
+Contatos Unicos: 5
+
+Contatos de 13
+Contatos Totais: 12
+Contatos Unicos: 9
+
+Contatos de 14
+Contatos Totais: 3
+Contatos Unicos: 3
+
+Contatos de 15
+Contatos Totais: 11
+Contatos Unicos: 8
+
+Contatos de 16
+Contatos Totais: 7
+Contatos Unicos: 6
+
+Contatos de 17
+Contatos Totais: 28
+Contatos Unicos: 19
+
+Contatos de 18
+Contatos Totais: 6
+Contatos Unicos: 6
+
+Contatos de 19
+Contatos Totais: 4
+Contatos Unicos: 4
+
+Contatos de 20
+Contatos Totais: 6
+Contatos Unicos: 6
+
+Contatos de 21
+Contatos Totais: 3
+Contatos Unicos: 3
+
+Contatos de 22
+Contatos Totais: 4
+Contatos Unicos: 4
+
+Contatos de 23
+Contatos Totais: 18
+Contatos Unicos: 11
+
+Contatos de 24
+Contatos Totais: 9
+Contatos Unicos: 7
+
+Contatos de 25
+Contatos Totais: 8
+Contatos Unicos: 8
+
+Contatos de 26
+Contatos Totais: 5
+Contatos Unicos: 5
+
+Contatos de 27
+Contatos Totais: 2
+Contatos Unicos: 2
+
+Contatos de 28
+Contatos Totais: 4
+Contatos Unicos: 4
+
+Contatos de 29
+Contatos Totais: 4
+Contatos Unicos: 4
+
+Contatos de 30
+Contatos Totais: 9
+Contatos Unicos: 8
+
+Contatos de 31
+Contatos Totais: 4
+Contatos Unicos: 4
+
+Contatos de 32
+Contatos Totais: 0
+Contatos Unicos: 0
+
+Contatos de 33
+Contatos Totais: 7
+Contatos Unicos: 6
+
+Contatos de 34
+Contatos Totais: 2
+Contatos Unicos: 2
+
+Contatos de 35
+Contatos Totais: 8
+Contatos Unicos: 7
+
+Contatos de 36
+Contatos Totais: 0
+Contatos Unicos: 0
+
+Contatos de 37
+Contatos Totais: 2
+Contatos Unicos: 2
+
+Contatos de 38
+Contatos Totais: 21
+Contatos Unicos: 16
+
+Contatos de 39
+Contatos Totais: 10
+Contatos Unicos: 10
+
+Contatos de 40
+Contatos Totais: 7
+Contatos Unicos: 5
+
+Contatos de 41
+Contatos Totais: 19
+Contatos Unicos: 14
+
+Contatos de 42
+Contatos Totais: 4
+Contatos Unicos: 4
+
+Contatos de 43
+Contatos Totais: 7
+Contatos Unicos: 6
+
+Contatos de 44
+Contatos Totais: 7
+Contatos Unicos: 5
+
+Contatos de 45
+Contatos Totais: 2
+Contatos Unicos: 2
+
+Contatos de 46
+Contatos Totais: 5
+Contatos Unicos: 5
+
+Contatos de 47
+Contatos Totais: 11
+Contatos Unicos: 9
+
+Contatos de 48
+Contatos Totais: 4
+Contatos Unicos: 4
+
+Contatos de 49
+Contatos Totais: 15
+Contatos Unicos: 12
+
+tempo medio: 18.621572712384285
