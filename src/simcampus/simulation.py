@@ -27,7 +27,6 @@ def run_simulation(
     verbose: bool = False,
 ):
     rnd = default_rng(seed)
-    np.random.seed(seed=seed)  # configura seed para as funções de norm e expo
 
     input_path = PosixPath(inputdir)
     (
@@ -42,11 +41,7 @@ def run_simulation(
 
     output_path = PosixPath(outputdir)
     os.makedirs(output_path, exist_ok=True)
-    foutput = open(output_path / "output.txt", "w")
-
-    print_simulation_information(foutput, seed, stay_data, transition_probability)
-
-    foutput.close()
+    print_simulation_information(output_path, seed, stay_data, transition_probability)
 
     env = simpy.Environment()
     occupation = {place: 0 for place in places}
