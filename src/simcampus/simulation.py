@@ -73,6 +73,6 @@ def run_simulation(
             verbose,
         )
 
-    Trace(output_path, env, occupation, all_contacts, places, verbose)
+    Trace(output_path, env, occupation, all_contacts, places, groups_ids, verbose)
 
     env.run(until=days * 1440)

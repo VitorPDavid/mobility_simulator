@@ -9,7 +9,7 @@ from simpy import Environment
 from simcampus.contacts.create_contacts_graphs import create_contacts_graphs
 from simcampus.contacts.contacts_types import Contact
 from simcampus.contacts.get_person_contacts_data import get_person_contacts_data
-from simcampus.simulation_types import Place
+from simcampus.simulation_types import Place, GroupIdentifier
 
 
 class Trace:
@@ -20,6 +20,7 @@ class Trace:
         occupation: dict[Place, int],
         all_contacts: dict[int, list[Contact]],
         places: list[Place],
+        groups: list[GroupIdentifier],
         verbose: bool = False,
     ) -> None:
         """
@@ -31,6 +32,7 @@ class Trace:
         self.output_path = output_path
         self.occupation = occupation
         self.places = places
+        self.groups = groups
         self.all_contacts = all_contacts
         self.verbose = verbose
 
@@ -91,4 +93,4 @@ class Trace:
 
         fcontacts.write(f"tempo medio: {np.mean(all_times)}\n")
 
-        create_contacts_graphs(self.output_path, self.all_contacts, self.places, person_contacts_data)
+        create_contacts_graphs(self.output_path, self.all_contacts, self.places, self.groups, person_contacts_data)

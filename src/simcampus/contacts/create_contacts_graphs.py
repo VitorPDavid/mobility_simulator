@@ -9,16 +9,18 @@ from simcampus.simulation_types import Place
 from simcampus.contacts.contacts_types import Contact, ContactData, GroupContactsData
 from simcampus.contacts.create_contact_heatmap import create_contact_heatmap
 from simcampus.contacts.get_group_contacts_data import get_group_contacts_data
+from simcampus.simulation_types import GroupIdentifier
 
 
 def create_contacts_graphs(
     output_path: PosixPath,
     all_contacts: dict[int, list[Contact]],
     places: list[Place],
+    groups: list[GroupIdentifier],
     person_contacts_data: list[ContactData],
 ):
     # groups
-    groups_contacts_data = get_group_contacts_data(all_contacts)
+    groups_contacts_data = get_group_contacts_data(groups, all_contacts)
     __groups_contacts_heatmap(groups_contacts_data, output_path)
 
     __create_groups_contact_bar_graph(groups_contacts_data, output_path)

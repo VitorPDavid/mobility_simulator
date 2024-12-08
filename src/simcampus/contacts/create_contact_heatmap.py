@@ -3,10 +3,8 @@ import matplotlib.pyplot as plt
 
 import numpy as np
 
-from simcampus.simulation_types import GroupIdentifier
 
-
-def create_contact_heatmap(groups: list[GroupIdentifier], data: list[list[int]], title: str, heatmap_path: PosixPath):
+def create_contact_heatmap(groups: list[str], data: list[list[int]], title: str, heatmap_path: PosixPath):
     np_data = np.array(data, dtype=np.uint64)
 
     fig, ax = plt.subplots()

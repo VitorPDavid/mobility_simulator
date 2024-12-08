@@ -3,7 +3,9 @@ from simcampus.contacts.contacts_types import Contact, ContactData, GroupContact
 from simcampus.simulation_types import GroupIdentifier
 
 
-def get_group_contacts_data(all_contacts: dict[int, list[Contact]]) -> GroupContactsData:
+def get_group_contacts_data(
+    groups: list[GroupIdentifier], all_contacts: dict[int, list[Contact]]
+) -> GroupContactsData:
     contacts_data: list[ContactData] = []
     group_contacts: dict[int, Collection[Contact]] = {}
 
@@ -12,7 +14,7 @@ def get_group_contacts_data(all_contacts: dict[int, list[Contact]]) -> GroupCont
             group = int(person_contacts[0].get_person(person).group)
             group_contacts[group] = set([*group_contacts.get(group, set()), *person_contacts])
 
-    groups_list = list(group_contacts.keys())
+    groups_list: list[int] = [*groups]
     groups_list.sort()
 
     contact_matrix: list[list[int]] = []
