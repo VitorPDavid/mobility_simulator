@@ -26,7 +26,7 @@ def get_group_contacts_data(
     total_unique_contacts_with_other_groups: list[int] = []
 
     for index, group in enumerate(groups_list):
-        contacts = group_contacts[group]
+        contacts = group_contacts.get(group, [])
 
         unique_contacts_control: set[int] = set()
         unique_contacts: list[Contact] = []
