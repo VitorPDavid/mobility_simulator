@@ -4,8 +4,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-def create_contact_heatmap(groups: list[str], data: list[list[int]], title: str, heatmap_path: PosixPath):
-    np_data = np.array(data, dtype=np.uint64)
+def create_contact_heatmap(
+    groups: list[str], data: list[list[int]], title: str, heatmap_path: PosixPath, dtype=np.uint32
+):
+    np_data = np.array(data, dtype=dtype)
 
     fig, ax = plt.subplots()
     im = ax.imshow(data, cmap="magma_r")
