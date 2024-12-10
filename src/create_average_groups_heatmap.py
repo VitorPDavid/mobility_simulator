@@ -84,6 +84,7 @@ if __name__ == "__main__":
     with open(path / "data/workhours", "rb") as file:
         data = pickle.load(file)
         groups_data = [int(key) for key in data["group_freq"].keys()]
+        groups_data.sort()
 
     population = "400"
 
